@@ -1,0 +1,193 @@
+//GPS CODE:
+import wixWindowFrontend from 'wix-window-frontend';
+
+import wixData from 'wix-data';
+
+// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+// Add your code for this event here: 
+
+wixWindowFrontend.getCurrentGeolocation()
+    .then((obj) => {
+        // 1495027186984
+        let latitude = obj.coords.latitude; // 32.0971036
+        let longitude = obj.coords.longitude; // 34.774391099999995
+        console.log('Latitude:', latitude);
+        console.log('Longitude:', longitude);
+        $w.onReady(function () {
+            // You can set this dynamically based on user input or other data
+
+            // Fetch the CSV data
+            wixData.query("police")
+                .find()
+                .then(results => {
+                    // 'results' contains the CSV data
+                    let csvData = results.items;
+
+                    const targetlatitude = latitude;
+                    const targetlongitude = longitude; // Find the row with the matching name
+                    const matchingRow = csvData.find(row => (latitude >= (row.latitude - 0.01) && latitude <= (row.latitude + 0.01) && longitude >= (row.longitude - 0.01) && longitude <= (row.longitude + 0.01)));
+
+                    if (matchingRow) {
+                        // Extract the Age value from the matching row
+                        const fireNumber = matchingRow.fireNumber;
+                        const hospitalNumber = matchingRow.hospitalNumber;
+                        const hospitalName = matchingRow.hospitalName;
+                        const address = matchingRow.address;
+                        $w("#mobileText2").text = `${address}:\n Fire station number :  ${fireNumber} \n Hospital number :\n ${hospitalName}\n${hospitalNumber}`;
+                    } else {
+                        console.log(`${latitude} not found in the CSV data.`);
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        });
+    })
+    .catch((error) => {
+        let errorMsg = error;
+        console.error('Error:', errorMsg);
+    });
+import wixWindowFrontend from 'wix-window-frontend';
+
+import wixData from 'wix-data';
+
+
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+
+wixWindowFrontend.getCurrentGeolocation()
+  .then( (obj) => {
+    // 1495027186984
+    let latitude = obj.coords.latitude;             // 32.0971036
+    let longitude = obj.coords.longitude;           // 34.774391099999995
+  console.log('Latitude:', latitude);
+    console.log('Longitude:', longitude);
+    $w.onReady(function () {
+     // You can set this dynamically based on user input or other data
+
+  // Fetch the CSV data
+  wixData.query("police")
+    .find()
+    .then(results => {
+      // 'results' contains the CSV data
+      let csvData = results.items;
+
+      const targetlatitude = latitude;
+      const targetlongitude =longitude; // Find the row with the matching name
+      const matchingRow = csvData.find(row => (latitude>=(row.latitude-0.01) && latitude<=(row.latitude+0.01) && longitude>=(row.longitude-0.01) && longitude<=(row.longitude+0.01)));
+
+      if (matchingRow) {
+        // Extract the Age value from the matching row
+        const policeNumber = matchingRow.policeNumber;
+         const hospitalNumber = matchingRow.hospitalNumber;
+         const hospitalName = matchingRow.hospitalName;
+        const address = matchingRow.address;
+       $w("#mobileText2").text = ` ${address}\n Police station number :${policeNumber}\nHospital number :\n ${hospitalName}\n${hospitalNumber}`;
+      } else {
+        console.log(`${latitude} not found in the CSV data.`);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+});
+  } )
+  .catch( (error) => {
+    let errorMsg = error;
+     console.error('Error:', errorMsg);
+  });
+ import wixWindowFrontend from 'wix-window-frontend';
+
+import wixData from 'wix-data';
+
+
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+
+wixWindowFrontend.getCurrentGeolocation()
+  .then( (obj) => {
+    // 1495027186984
+    let latitude = obj.coords.latitude;             // 32.0971036
+    let longitude = obj.coords.longitude;           // 34.774391099999995
+  console.log('Latitude:', latitude);
+    console.log('Longitude:', longitude);
+    $w.onReady(function () {
+     // You can set this dynamically based on user input or other data
+
+  // Fetch the CSV data
+  wixData.query("police")
+    .find()
+    .then(results => {
+      // 'results' contains the CSV data
+      let csvData = results.items;
+
+      const targetlatitude = latitude;
+      const targetlongitude =longitude; // Find the row with the matching name
+      const matchingRow = csvData.find(row => (latitude>=(row.latitude-0.01) && latitude<=(row.latitude+0.01) && longitude>=(row.longitude-0.01) && longitude<=(row.longitude+0.01)));
+
+      if (matchingRow) {
+        // Extract the Age value from the matching row
+        
+        const hospitalNumber = matchingRow.hospitalNumber;
+        const hospitalName = matchingRow.hospitalName;
+        const address = matchingRow.address;
+       $w("#mobileText2").text = ` ${address}\n Hospital number :\n ${hospitalName}:\n ${hospitalNumber}`;
+      } else {
+        console.log(`${latitude} not found in the CSV data.`);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+});
+  } )
+  .catch( (error) => {
+    let errorMsg = error;
+     console.error('Error:', errorMsg);
+  });
+
+
+
+
+import wixData from 'wix-data';
+
+$w.onReady(function () {
+  // Set this event handler when the file is uploaded
+  $w('#csvFileUpload').onChange((event) => {
+    const file = event.target.files[0];
+
+    // Read the file using FileReader
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const csvData = event.target.result; // CSV data as a string
+
+      // Parse CSV data and convert it to an array of objects
+      const rows = csvData.split('\n');
+      const headers = rows[0].split(',');
+      const data = [];
+      for (let i = 1; i < rows.length; i++) {
+        const rowData = rows[i].split(',');
+        const entry = {};
+        for (let j = 0; j < headers.length; j++) {
+          entry[headers[j]] = rowData[j];
+        }
+        data.push(entry);
+      }
+
+      // Add the parsed data to the database collection
+      wixData.bulkInsert('police', data)
+        .then(() => {
+          console.log('CSV data imported successfully');
+        })
+        .catch((error) => {
+          console.error('Error importing CSV data:', error);
+        });
+    };
+
+    // Read the uploaded file as text
+    reader.readAsText(file);
+  });
+});
+
+ 
+
